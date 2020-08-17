@@ -165,58 +165,61 @@ function Idea(props) {
           <input type="submit" value="Submit" className="btn btn-primary" />
         </form>
       </Modal>
-      <div>
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item">
-            <div className="row">
-              <div className="col-xs-2">
-                <p>
-                  <font size="6">
-                    Rating:
-                    <b> {props.idea.rating}</b>
-                  </font>
-                </p>
-              </div>
-              <div className="col-md-10">
-                <div className="list-group list-group-flush">
-                  <div className="list-group-item clearfix">
-                    Idea Name:
-                    <b> {props.idea.ideaInput}</b>
-                    <span style={{ marginLeft: '20px' }}></span>
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-xs float-right"
-                      style={{ margin: '5px' }}
-                      onClick={() => {
-                        showModal();
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-danger btn-xs float-right"
-                      style={{ margin: '5px' }}
-                      onClick={(event) =>
-                        db.collection('ideas').doc(props.idea.id).delete()
-                      }
-                    >
-                      Delete
-                    </button>
-                  </div>
 
-                  <div className="list-group-item">
-                    Category: {props.idea.category}
-                  </div>
-                </div>
-              </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{props.idea.ideaInput}</h5>
+              <br />
+              <h6 class="card-subtitle mb-2 text-muted">
+                Rating: {props.idea.rating}
+              </h6>
+              <h6 class="card-subtitle mb-2 text-muted">
+                Category: {props.idea.category}
+              </h6>
+              <br />
+              Description:
+              <p>{props.idea.ideaDescription}</p>
+              <button
+                type="button"
+                className="btn btn-primary btn-xs float-right"
+                style={{ margin: '5px' }}
+                onClick={() => {
+                  showModal();
+                  db.collection('ideas')
+                    .doc(props.idea.id)
+                    .get()
+                    .then((doc) => {
+                      if (doc.exists) {
+                        setInput({
+                          ideaInput: doc.data().ideaInput,
+                          shortIdeaName: doc.data().shortIdeaName,
+                          rating: doc.data().rating,
+                          ideaDescription: doc.data().ideaDescription,
+                          category: doc.data().category,
+                        });
+                      }
+                    });
+                }}
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger btn-xs float-right"
+                style={{ margin: '5px' }}
+                onClick={() =>
+                  db.collection('ideas').doc(props.idea.id).delete()
+                }
+              >
+                Delete
+              </button>
             </div>
-          </li>
-          <div className="alert alert-secondary" role="alert">
-            {props.idea.ideaDescription}
           </div>
-        </ul>
+        </div>
       </div>
+      <br />
     </div>
   );
 }
